@@ -1,5 +1,5 @@
 var button = document.getElementById('newGameButton')
-button.addEventListener("click", function)
+// button.addEventListener("click", function)
 
 window.WebSocket = window.WebSocket || window.MozWebSocket;
 

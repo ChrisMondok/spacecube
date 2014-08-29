@@ -1,6 +1,5 @@
-var button = document.getElementById('newGameButton')
-// button.addEventListener("click", function)
-
+var newGameButton = document.getElementById('newGameButton')
+// newGameButton.addEventListener("click", function)
 window.WebSocket = window.WebSocket || window.MozWebSocket;
 
 var Game = function() {};

@@ -1,0 +1,24 @@
+{
+  "name": "spacecube",
+  "version": "0.0.0",
+  "description": "",
+  "main": "camera.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChrisMondok/spacecube.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChrisMondok/spacecube/issues"
+  },
+  "homepage": "https://github.com/ChrisMondok/spacecube",
+  "dependencies": {
+    "websocket": "~1.0.8",
+    "connect": "~3.1.1"
+  }
+}

@@ -33,6 +33,28 @@ canvas {
     top: 0;
     z-index: 2;
 }
+.status {
+    position: fixed;
+    bottom: 50%;
+    width: 100%;
+    text-align: center;
+    font-size: 10em;
+    color: white;
+    z-index: 1000;
+}
+.menu {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
+}
+.menu > button {
+    position: relative;
+    height: 5em;
+    width: 10em;
+    border-radius: 2.5em;
+}
 .invisible {
     display: none;
 }

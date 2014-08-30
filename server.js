@@ -1,38 +1,61 @@
-var WebSocketServer = require('websocket').server,
-    express = require('express'),
-    app = express();
+var express = require('express'),
+    app = express(),
+    http = require('http'),
+    server = http.createServer(app),
+    WebSocketServer = require('ws').Server;
+
+var Player = require('./player'),
+    Match = require('./match');
 
 app.use(express.static(__dirname));
 
-wsServer = new WebSocketServer({
-    httpServer: app
+var wsServer = new WebSocketServer({
+    server: server
 });
 
+var players = {};
+var lobby = [];
+var matches = {};
 
-var connections = [];
+var findOpponent = function(newOpponent) {
+    if (lobby.length) {
+        var existingOpponent = lobby.pop();
+        var match = new Match(existingOpponent, newOpponent);
+        matches[match.getToken()] = match;
+        match.begin();
+    } else {
+        lobby.push(newOpponent)
+    }
+};
 
-var matches = [];
-
-
-wsServer.on('request', function(request) {
-    var connection = request.accept(null, request.origin);
-    connections.push(connection);
-    console.log(connection);
-    // This is the most important callback for us, we'll handle
-    // all messages from users here.
-    connection.on('message', function(message) {
-        if (message.type === 'utf8') {
-            // process WebSocket message
+wsServer.on('connection', function(connection) {
+    var newPlayer = new Player(connection),
+        token = newPlayer.getToken();
+    players[token] = newPlayer;
+    console.log("Added connection", token, ".", "Total Players:", Object.keys(players).length)
+    connection.send(JSON.stringify({
+        action: "new-token",
+        data: token
+    }));
+    connection.on('message', function(data) {
+        var message = JSON.parse(data);
+        switch (message.action) {
+            case "new-game-request":
+                findOpponent(newPlayer);
+                break;
+            case "solution-reached":
+                matches[message.data].end();
+                break;
+            default:
+                console.log("Unexpected action", message);
         }
     });
 
     connection.on('close', function(connection) {
-        var index = connections.indexOf(connection);
-        if (index != -1) {
-            connections.splice(index, 1);
-        }
+        delete players[token];
+        console.log("Removings connection", token, ".", "Total Players:", Object.keys(players).length);
     });
 });
 
 
-app.listen(1337);
+server.listen(1337);

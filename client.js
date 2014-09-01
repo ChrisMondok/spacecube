@@ -26,7 +26,7 @@ newGameButton.addEventListener("click", function() {
     G = new Game();
     G.connect(function(game) {
         toggleStatus(true, "Finding a player");
-        game.startNewGame();
+        game.requestNewGame();
     });
     toggleMenu(false);
     toggleStatus(true, "Connecting");
@@ -80,7 +80,7 @@ Game.prototype.connect = function(callback) {
     };
 }
 
-Game.prototype.startNewGame = function() {
+Game.prototype.requestNewGame = function() {
     this.connection.send(JSON.stringify({
         action: "new-game-request"
     }));

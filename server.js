@@ -5,7 +5,8 @@ var express = require('express'),
     WebSocketServer = require('ws').Server;
 
 var Player = require('./player'),
-    Match = require('./match');
+    Match = require('./match'),
+    Message = require('./message');
 
 app.use(express.static(__dirname));
 
@@ -29,22 +30,23 @@ var findOpponent = function(newOpponent) {
 };
 
 wsServer.on('connection', function(connection) {
-    var newPlayer = new Player(connection),
-        token = newPlayer.getToken();
-    players[token] = newPlayer;
-    console.log("Added connection", token, ".", "Total Players:", Object.keys(players).length)
-    connection.send(JSON.stringify({
-        action: "new-token",
-        data: token
-    }));
+    var player = new Player(connection),
+        token = player.getToken();
+    players[token] = player;
+    console.log("Added connection", token, ".", "Total Players:", Object.keys(players).length);
+
+    var newTokenMessage = new Message("new-token", token);
+    connection.send(newTokenMessage.toString());
+
     connection.on('message', function(data) {
         var message = JSON.parse(data);
         switch (message.action) {
             case "new-game-request":
-                findOpponent(newPlayer);
+                findOpponent(player);
                 break;
             case "solution-reached":
-                matches[message.data].end();
+                matches[message.data].end(player);
+                delete matches[message.data];
                 break;
             default:
                 console.log("Unexpected action", message);

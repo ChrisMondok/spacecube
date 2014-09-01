@@ -1,4 +1,5 @@
 var uuid = require('node-uuid');
+var Message = require('./message');
 
 var Match = (function() {
     var Match = function(opponent1, opponent2) {
@@ -14,28 +15,20 @@ var Match = (function() {
         return this.token;
     };
     Match.prototype.begin = function() {
-        var message = {
-            action: 'start-game',
-            data: this.token
-        };
-        this.opponent1.connection.send(JSON.stringify(message));
-        this.opponent2.connection.send(JSON.stringify(message));
+        var message = new Message('start-game', this.token);
+        this.opponent1.connection.send(message.toString());
+        this.opponent2.connection.send(message.toString());
     };
     Match.prototype.end = function(winningOpponent) {
-        var winningMessage = {
-            action: 'end-game',
-            data: 'You Win!'
-        };
-        var losingMessage = {
-            action: 'end-game',
-            data: 'You Lose!'
-        };
-        if (this.opponent1 == winningOpponent) {
-            this.opponent1.connection.send(JSON.stringify(winningMessage));
-            this.opponent2.connection.send(JSON.stringify(losingMessage));
+        var winningMessage = new Message('end-game', 'You Win!');
+        var losingMessage = new Message('end-game', 'You Lose!');
+
+        if (this.opponent1.getToken() == winningOpponent.getToken()) {
+            this.opponent1.connection.send(winningMessage.toString());
+            this.opponent2.connection.send(losingMessage.toString());
         } else {
-            this.opponent1.connection.send(JSON.stringify(losingMessage));
-            this.opponent2.connection.send(JSON.stringify(winningMessage));
+            this.opponent1.connection.send(losingMessage.toString());
+            this.opponent2.connection.send(winningMessage.toString());
         }
     }
     return Match;

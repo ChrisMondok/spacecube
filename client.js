@@ -1,5 +1,3 @@
-window.WebSocket = window.WebSocket || window.MozWebSocket;
-
 var toggleItem = function(item, show) {
     if (show)
         item.classList.remove('invisible');

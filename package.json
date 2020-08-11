@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/ChrisMondok/spacecube",
   "dependencies": {
-    "ws": "~0.4.32",
+    "ws": "~7.3.1",
     "node-uuid": "~1.4.1",
     "express": "~4.8.7"
   }
